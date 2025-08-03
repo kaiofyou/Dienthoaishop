@@ -1,30 +1,16 @@
 pipeline {
     agent any
-    
-    // --- THÊM BỘ KÍCH HOẠT WEBHOOK ---
-    triggers {
-        githubPush() // Kích hoạt pipeline mỗi khi có push lên repo
-    }
-    
     stages {
         stage('Checkout') {
             steps {
-                // Xóa không gian làm việc cũ để đảm bảo sạch sẽ
-                cleanWs() 
-                
-                // Chỉ định rõ ràng URL và nhánh 'main'
-                git branch: 'main', url: 'https://github.com/kaiofyou/Dienthoaishop.git' 
+                git 'https://github.com/kaiofyou/Dienthoaishop.git' // Thay bằng URL repo của bạn
             }
         }
-        stage('Build & Deploy Docker Containers') {
+        stage('Build & Deploy') {
             steps {
                 script {
-                    // Dừng các container cũ nếu có
-                    sh 'docker-compose down' 
-                    // Build lại image mới, không dùng cache để đảm bảo lấy code mới nhất
-                    sh 'docker-compose build --no-cache' 
-                    // Khởi động lại ứng dụng ở chế độ nền
-                    sh 'docker-compose up -d' 
+                    sh 'docker-compose build'
+                    sh 'docker-compose up -d'
                 }
             }
         }
