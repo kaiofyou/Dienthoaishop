@@ -8,14 +8,16 @@ pipeline {
       }
     }
 
+    stage('Cleanup Old Containers') {
+      steps {
+        sh 'docker ps -a -q --filter "name=mssql_server" | xargs -r docker rm -f'
+      }
+    }
+
     stage('Build & Deploy Docker Containers') {
       steps {
-        script {
-          // Dừng container nếu có, không lỗi nếu chưa chạy
-          sh 'docker-compose down || true'
-          // Build và khởi động lại container
-          sh 'docker-compose up -d --build'
-        }
+        sh 'docker-compose down || true'
+        sh 'docker-compose up -d --build'
       }
     }
   }
