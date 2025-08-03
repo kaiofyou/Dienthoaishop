@@ -6,6 +6,7 @@ networks:
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_server
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "tuan2972005"
@@ -13,10 +14,10 @@ services:
       - "1433:1433"
     networks:
       - monitoring-net
-    restart: unless-stopped
 
   backend:
     build: ./dienthoai-shop
+    container_name: backend_app
     image: duongtuan05/dienthoai-shop-backend:latest
     ports:
       - "8080:8080"
@@ -28,10 +29,10 @@ services:
       - db
     networks:
       - monitoring-net
-    restart: unless-stopped
 
   frontend:
     build: ./dienthoai-shop-frontend
+    container_name: frontend_app
     image: duongtuan05/dienthoai-shop-frontend:latest
     ports:
       - "5173:80"
@@ -39,24 +40,25 @@ services:
       - backend
     networks:
       - monitoring-net
-    restart: unless-stopped
 
   prometheus:
-    build: ./prometheus
+    image: prom/prometheus:latest # <-- Quay lại dùng image gốc
+    container_name: prometheus
     ports:
       - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml # <-- Sử dụng volume
     depends_on:
       - backend
     networks:
       - monitoring-net
-    restart: unless-stopped
 
   grafana:
     image: grafana/grafana-oss:latest
+    container_name: grafana
     ports:
       - "3000:3000"
     depends_on:
       - prometheus
     networks:
       - monitoring-net
-    restart: unless-stopped
