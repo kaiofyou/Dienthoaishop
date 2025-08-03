@@ -4,7 +4,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Thay thế URL này bằng URL repo Git của bạn
-                git 'https://github.com/your-username/your-repo.git'
+                git 'https://github.com/kaiofyou/Dienthoaishop.git'
             }
         }
         stage('Build & Deploy Docker Containers') {
