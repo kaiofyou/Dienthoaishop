@@ -10,7 +10,7 @@ services:
       - "1433:1433"
 
   backend:
-    build: C:\Users\GIGABYTE\Dienthoaishop-deploy\dienthoai-shop # Đường dẫn đến thư mục backend
+    build: ./dienthoai-shop # Đường dẫn đến thư mục backend
     container_name: backend_app
     ports:
       - "8080:8080"
@@ -22,7 +22,7 @@ services:
       - db
 
   frontend:
-    build: C:\Users\GIGABYTE\Dienthoaishop-deploy\dienthoai-shop-frontend # Đường dẫn đến thư mục frontend
+    build: ./dienthoai-shop-frontend # Đường dẫn đến thư mục frontend
     container_name: frontend_app
     ports:
       - "5173:80" # Ánh xạ cổng 5173 của máy bạn vào cổng 80 của container
