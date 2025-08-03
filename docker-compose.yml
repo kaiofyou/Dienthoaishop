@@ -4,7 +4,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql_server
     environment:
-      ACCEPT_EULA: "sa"
+      ACCEPT_EULA: "Y"
       SA_PASSWORD: "tuan2972005" # Đặt mật khẩu mạnh ở đây
     ports:
       - "1433:1433"
