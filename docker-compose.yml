@@ -9,7 +9,7 @@ services:
     container_name: mssql_server
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Tuan2972005@"
+      SA_PASSWORD: "Tuan2972005."
     ports:
       - "1433:1433"
     networks:
@@ -24,7 +24,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: "jdbc:sqlserver://db:1433;databaseName=dienthoai_shop_db;encrypt=true;trustServerCertificate=true"
       SPRING_DATASOURCE_USERNAME: "sa"
-      SPRING_DATASOURCE_PASSWORD: "Tuan2972005@"
+      SPRING_DATASOURCE_PASSWORD: "Tuan2972005."
     depends_on:
       - db
     networks:
