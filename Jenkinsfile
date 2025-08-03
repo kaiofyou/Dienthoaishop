@@ -1,5 +1,11 @@
 pipeline {
     agent any
+    
+    // --- THÊM BỘ KÍCH HOẠT WEBHOOK ---
+    triggers {
+        githubPush() // Kích hoạt pipeline mỗi khi có push lên repo
+    }
+    
     stages {
         stage('Checkout') {
             steps {
