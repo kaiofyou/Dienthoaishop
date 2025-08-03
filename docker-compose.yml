@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: mssql_server
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "tuan2972005" # Đặt mật khẩu mạnh ở đây
+    ports:
+      - "1433:1433"
+
+  backend:
+    build: ./dienthoai-shop # Đường dẫn đến thư mục backend
+    container_name: backend_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:sqlserver://db:1433;databaseName=dienthoai_shop_db;encrypt=true;trustServerCertificate=true"
+      SPRING_DATASOURCE_USERNAME: "sa"
+      SPRING_DATASOURCE_PASSWORD: "tuan2972005" # Dùng lại mật khẩu ở trên
+    depends_on:
+      - db
+
+  frontend:
+    build: ./dienthoai-shop-frontend # Đường dẫn đến thư mục frontend
+    container_name: frontend_app
+    ports:
+      - "5173:80" # Ánh xạ cổng 5173 của máy bạn vào cổng 80 của container
+    depends_on:
+      - backend

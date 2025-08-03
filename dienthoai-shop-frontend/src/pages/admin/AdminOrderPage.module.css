@@ -1,0 +1,60 @@
+.container {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  margin-top: 0;
+}
+
+.orderTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orderTable th,
+.orderTable td {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 1rem;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.orderTable th {
+  background-color: #fafafa;
+  font-weight: 600;
+}
+
+.statusSelect {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: #fff;
+}
+
+.status_PENDING {
+  color: #f39c12;
+  font-weight: bold;
+}
+
+.status_PROCESSING {
+  color: #3498db;
+  font-weight: bold;
+}
+
+.status_COMPLETED {
+  color: #27ae60;
+  font-weight: bold;
+}
+
+.status_CANCELLED {
+  color: #e74c3c;
+  font-weight: bold;
+}

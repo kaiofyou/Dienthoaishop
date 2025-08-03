@@ -1,0 +1,131 @@
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.cartTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+.cartTable th,
+.cartTable td {
+  border-bottom: 1px solid #ecf0f1;
+  padding: 1rem;
+  text-align: left;
+}
+
+.cartTable th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.summary {
+  text-align: right;
+}
+
+.totalPrice {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.checkoutButton {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+}
+
+.checkoutButton:hover {
+  background-color: #2ecc71;
+}
+
+.emptyCart {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
+
+/* --- CÁC STYLE MỚI --- */
+.paymentSection {
+  margin-top: 2rem;
+  border-top: 1px solid #ecf0f1;
+  padding-top: 2rem;
+}
+
+.paymentTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.paymentOption {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+}
+
+.paymentOptionSelected {
+  border-color: #3498db;
+  background-color: #f0f8ff;
+}
+
+.radioCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  border: 2px solid #bdc3c7;
+  margin-right: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.radioCircleSelected {
+  border-color: #3498db;
+}
+
+.radioInnerCircle {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #3498db;
+}
+
+.qrContainer {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.qrImage {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
