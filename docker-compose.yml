@@ -1,11 +1,11 @@
 version: "3.8"
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: mssql_server
     environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourStrongPassword123" # Đặt mật khẩu mạnh ở đây
+      ACCEPT_EULA: "sa"
+      SA_PASSWORD: "tuan2972005" # Đặt mật khẩu mạnh ở đây
     ports:
       - "1433:1433"
 
@@ -17,7 +17,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: "jdbc:sqlserver://db:1433;databaseName=dienthoai_shop_db;encrypt=true;trustServerCertificate=true"
       SPRING_DATASOURCE_USERNAME: "sa"
-      SPRING_DATASOURCE_PASSWORD: "YourStrongPassword123" # Dùng lại mật khẩu ở trên
+      SPRING_DATASOURCE_PASSWORD: "tuan2972005" # Dùng lại mật khẩu ở trên
     depends_on:
       - db
 
