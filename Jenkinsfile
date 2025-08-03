@@ -4,14 +4,18 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git 'https://github.com/kaiofyou/Dienthoaishop.git'
+        git branch: 'main', url: 'https://github.com/kaiofyou/Dienthoaishop.git'
       }
     }
 
     stage('Build & Deploy Docker Containers') {
       steps {
-        bat 'docker-compose down || exit 0'
-        bat 'docker-compose up -d --build'
+        script {
+          // Dừng container nếu có, không lỗi nếu chưa chạy
+          sh 'docker-compose down || true'
+          // Build và khởi động lại container
+          sh 'docker-compose up -d --build'
+        }
       }
     }
   }
