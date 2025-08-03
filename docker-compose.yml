@@ -11,6 +11,9 @@ services:
 
   backend:
     build: ./dienthoai-shop # Đường dẫn đến thư mục backend
+    # --- THÊM DÒNG NÀY ---
+    # tên người dùng Docker Hub của bạn
+    image: duongtuan05/dienthoai-shop-backend:latest
     container_name: backend_app
     ports:
       - "8080:8080"
@@ -23,6 +26,9 @@ services:
 
   frontend:
     build: ./dienthoai-shop-frontend # Đường dẫn đến thư mục frontend
+    # --- THÊM DÒNG NÀY ---
+    # tên người dùng Docker Hub của bạn
+    image: duongtuan05/dienthoai-shop-frontend:latest
     container_name: frontend_app
     ports:
       - "5173:80" # Ánh xạ cổng 5173 của máy bạn vào cổng 80 của container
