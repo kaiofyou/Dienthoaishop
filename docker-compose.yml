@@ -5,11 +5,10 @@ networks:
 
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: mssql_server
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourStrongPassword123"
+      SA_PASSWORD: "tuan2972005"
     ports:
       - "1433:1433"
     networks:
@@ -18,14 +17,13 @@ services:
 
   backend:
     build: ./dienthoai-shop
-    container_name: backend_app
     image: duongtuan05/dienthoai-shop-backend:latest
     ports:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:sqlserver://db:1433;databaseName=dienthoai_shop_db;encrypt=true;trustServerCertificate=true"
       SPRING_DATASOURCE_USERNAME: "sa"
-      SPRING_DATASOURCE_PASSWORD: "YourStrongPassword123"
+      SPRING_DATASOURCE_PASSWORD: "tuan2972005"
     depends_on:
       - db
     networks:
@@ -34,7 +32,6 @@ services:
 
   frontend:
     build: ./dienthoai-shop-frontend
-    container_name: frontend_app
     image: duongtuan05/dienthoai-shop-frontend:latest
     ports:
       - "5173:80"
@@ -45,12 +42,9 @@ services:
     restart: unless-stopped
 
   prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
+    build: ./prometheus
     ports:
       - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
       - backend
     networks:
@@ -59,16 +53,10 @@ services:
 
   grafana:
     image: grafana/grafana-oss:latest
-    container_name: grafana
     ports:
       - "3000:3000"
-    volumes:
-      - grafana-storage:/var/lib/grafana
     depends_on:
       - prometheus
     networks:
       - monitoring-net
     restart: unless-stopped
-
-volumes:
-  grafana-storage:
