@@ -1,31 +1,31 @@
 services:
   backend:
     build: ./dienthoai-shop
+    # Đổi tên image cho đúng với repository của bạn
+    image: duongtuan05/dienthoai-shop-backend:${TAG:-latest}
     container_name: backend-app
     ports:
       - "8080:8080"
     environment:
-      # Thay đổi 'db' thành 'host.docker.internal' để trỏ tới máy chủ của bạn
       SPRING_DATASOURCE_URL: "jdbc:sqlserver://host.docker.internal:1433;databaseName=dienthoai_shop_db;encrypt=true;trustServerCertificate=true"
-      SPRING_DATASOURCE_USERNAME: "sa" # Thay bằng username của bạn
-      SPRING_DATASOURCE_PASSWORD: "Tuan2972005." # Thay bằng password của bạn
-    # Không còn 'depends_on: db'
+      SPRING_DATASOURCE_USERNAME: "sa"
+      SPRING_DATASOURCE_PASSWORD: "Tuan2972005."
     networks:
-      - monitoring-net
+      - app-net
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
   frontend:
     build: ./dienthoai-shop-frontend
+    # Đổi tên image cho đúng với repository của bạn
+    image: duongtuan05/dienthoai-shop-frontend:${TAG:-latest}
     container_name: frontend-app
     ports:
-      # Cổng 5173 là cổng mặc định của Vite dev server. Nếu bạn build ra file tĩnh
-      # và phục vụ bằng Nginx trong Docker, port bên trong container sẽ là 80.
       - "5173:5173"
     depends_on:
       - backend
     networks:
-      - monitoring-net
+      - app-net
 
   prometheus:
     image: prom/prometheus:latest

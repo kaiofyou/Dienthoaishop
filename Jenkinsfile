@@ -1,6 +1,14 @@
 pipeline {
     agent any
     
+    environment {
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        // Cập nhật đúng username Docker Hub của bạn
+        DOCKERHUB_USER = "duongtuan05" 
+        // Giữ nguyên tên project để tag image local cho đúng
+        PROJECT_NAME = "dienthoaishop" 
+    }
+    
     triggers {
         githubPush()
     }
@@ -9,23 +17,33 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    // Lệnh này sẽ build cả backend và frontend dựa trên docker-compose.yml
+                    echo "Building images..."
                     sh "docker-compose build --no-cache"
                 }
             }
         }
         
-        stage('Push to Docker Hub') {
+        stage('Tag and Push to Docker Hub') {
             steps {
                 script {
-                    // Đảm bảo credentialsId của bạn trong Jenkins là 'dockerhub-credentials'
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        // Đăng nhập vào Docker Hub
-                        sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+                    // Cập nhật lại tên image đầy đủ cho đúng
+                    def backendImage = "${DOCKERHUB_USER}/dienthoai-shop-backend:${IMAGE_TAG}"
+                    def frontendImage = "${DOCKERHUB_USER}/dienthoai-shop-frontend:${IMAGE_TAG}"
+                    
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER_VAR', passwordVariable: 'DOCKER_PASS_VAR')]) {
+                        echo "Logging in to Docker Hub..."
+                        sh "echo ${DOCKER_PASS_VAR} | docker login -u ${DOCKER_USER_VAR} --password-stdin"
                         
-                        // Đẩy cả hai image lên
-                        sh 'docker-compose push backend'
-                        sh 'docker-compose push frontend'
+                        echo "Tagging images..."
+                        // Tên image local được tạo bởi docker-compose là <thư_mục_gốc>_<tên_dịch_vụ>
+                        // Ví dụ: dienthoaishop_deploy_backend
+                        // Bạn cần kiểm tra lại tên image local bằng lệnh `docker images` sau khi build
+                        sh "docker tag ${PROJECT_NAME}_backend ${backendImage}" 
+                        sh "docker tag ${PROJECT_NAME}_frontend ${frontendImage}"
+                        
+                        echo "Pushing images to Docker Hub..."
+                        sh "docker push ${backendImage}"
+                        sh "docker push ${frontendImage}"
                     }
                 }
             }
@@ -34,11 +52,9 @@ pipeline {
         stage('Deploy Containers') {
             steps {
                 script {
-                    def projectName = 'dienthoaishop'
-                    sh "docker-compose -p ${projectName} down"
-                    // Lệnh pull sẽ kéo về phiên bản image mới nhất từ Docker Hub
-                    sh "docker-compose -p ${projectName} pull" 
-                    sh "docker-compose -p ${projectName} up -d"
+                    echo "Deploying new version: ${IMAGE_TAG}"
+                    sh "docker-compose -p ${PROJECT_NAME} down"
+                    sh "TAG=${IMAGE_TAG} docker-compose -p ${PROJECT_NAME} up -d"
                 }
             }
         }
@@ -46,7 +62,7 @@ pipeline {
     
     post {
         always {
-            // Luôn đăng xuất khỏi Docker Hub sau khi hoàn thành
+            echo "Logging out from Docker Hub..."
             sh 'docker logout'
         }
     }
