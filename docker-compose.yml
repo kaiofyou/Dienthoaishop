@@ -1,35 +1,32 @@
-version: "3.8"
-
 services:
-  db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    container_name: mssql_server
-    environment:
-      ACCEPT_EULA: "Y"
-      SA_PASSWORD: "tuan2972005" # Đặt mật khẩu của bạn ở đây
-    ports:
-      - "1433:1433"
-
   backend:
     build: ./dienthoai-shop
-    container_name: backend_app
+    container_name: backend-app
     ports:
       - "8080:8080"
     environment:
-      # Sửa lại URL để trỏ đến service 'db'
-      SPRING_DATASOURCE_URL: "jdbc:sqlserver://db:1433;databaseName=dienthoai_shop_db;encrypt=false;trustServerCertificate=true"
-      SPRING_DATASOURCE_USERNAME: "sa"
-      SPRING_DATASOURCE_PASSWORD: "Tuan2972005." # Dùng lại mật khẩu ở trên
-    depends_on:
-      - db # Đảm bảo backend chỉ khởi động sau khi db đã sẵn sàng
+      # Thay đổi 'db' thành 'host.docker.internal' để trỏ tới máy chủ của bạn
+      SPRING_DATASOURCE_URL: "jdbc:sqlserver://host.docker.internal:1433;databaseName=dienthoai_shop_db;encrypt=true;trustServerCertificate=true"
+      SPRING_DATASOURCE_USERNAME: "sa" # Thay bằng username của bạn
+      SPRING_DATASOURCE_PASSWORD: "Tuan2972005." # Thay bằng password của bạn
+    # Không còn 'depends_on: db'
+    networks:
+      - monitoring-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   frontend:
     build: ./dienthoai-shop-frontend
-    container_name: frontend_app
+    container_name: frontend-app
     ports:
-      - "5173:80"
+      # Cổng 5173 là cổng mặc định của Vite dev server. Nếu bạn build ra file tĩnh
+      # và phục vụ bằng Nginx trong Docker, port bên trong container sẽ là 80.
+      - "5173:5173"
     depends_on:
       - backend
+    networks:
+      - monitoring-net
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -37,17 +34,26 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - backend
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
       - monitoring-net
 
   grafana:
-    image: grafana/grafana-oss:latest
+    image: grafana/grafana:latest
     container_name: grafana
     ports:
       - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
     depends_on:
       - prometheus
     networks:
       - monitoring-net
+
+networks:
+  monitoring-net:
+    driver: bridge
+
+volumes:
+  grafana-storage: {}
