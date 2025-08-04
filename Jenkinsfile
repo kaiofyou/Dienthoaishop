@@ -1,18 +1,12 @@
 pipeline {
     agent any
-
-    // Bỏ khối options { wipeout true } đi và thay bằng cách này
-    options {
-        // Tùy chọn này sẽ ngăn Jenkins tự động checkout code khi bắt đầu
-        // để chúng ta có thể kiểm soát hoàn toàn ở stage đầu tiên.
-        skipDefaultCheckout true
-    }
-
+    
     environment {
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        DOCKERHUB_USER = "duongtuan05"
-        // Tên thư mục chứa code của bạn trên Jenkins Workspace
-        PROJECT_DIR_NAME = "Dienthoaishop" // <-- Cập nhật lại nếu tên repo của bạn khác
+        // Cập nhật đúng username Docker Hub của bạn
+        DOCKERHUB_USER = "duongtuan05" 
+        // Giữ nguyên tên project để tag image local cho đúng
+        PROJECT_NAME = "dienthoaishop" 
     }
     
     triggers {
@@ -20,34 +14,19 @@ pipeline {
     }
     
     stages {
-        // Thêm stage này để dọn dẹp và checkout code một cách tường minh
-        stage('Initialize Workspace') {
+        stage('Build Docker Images') {
             steps {
                 script {
-                    echo "Cleaning up workspace..."
-                    // Xóa sạch mọi thứ trong thư mục làm việc cũ
-                    cleanWs()
-                    
-                    echo "Checking out latest code..."
-                    // Checkout code mới nhất từ Git
-                    checkout scm
-                }
-            }
-        }
-
-        stage('Build and Tag Images') {
-            steps {
-                script {
-                    echo "Building images with tag: ${IMAGE_TAG}"
-                    // Lấy tên project từ tên thư mục repo
-                    sh "TAG=${IMAGE_TAG} docker-compose -p ${PROJECT_DIR_NAME} build --no-cache"
+                    echo "Building images..."
+                    sh "docker-compose build --no-cache"
                 }
             }
         }
         
-        stage('Push to Docker Hub') {
+        stage('Tag and Push to Docker Hub') {
             steps {
                 script {
+                    // Cập nhật lại tên image đầy đủ cho đúng
                     def backendImage = "${DOCKERHUB_USER}/dienthoai-shop-backend:${IMAGE_TAG}"
                     def frontendImage = "${DOCKERHUB_USER}/dienthoai-shop-frontend:${IMAGE_TAG}"
                     
@@ -55,11 +34,14 @@ pipeline {
                         echo "Logging in to Docker Hub..."
                         sh "echo ${DOCKER_PASS_VAR} | docker login -u ${DOCKER_USER_VAR} --password-stdin"
                         
-                        echo "Tagging and Pushing images..."
-                        // Tên image local được docker-compose tạo ra là <thư_mục>_<tên_dịch_vụ>
-                        sh "docker tag ${PROJECT_DIR_NAME}_backend ${backendImage}"
-                        sh "docker tag ${PROJECT_DIR_NAME}_frontend ${frontendImage}"
+                        echo "Tagging images..."
+                        // Tên image local được tạo bởi docker-compose là <thư_mục_gốc>_<tên_dịch_vụ>
+                        // Ví dụ: dienthoaishop_deploy_backend
+                        // Bạn cần kiểm tra lại tên image local bằng lệnh `docker images` sau khi build
+                        sh "docker tag ${PROJECT_NAME}_backend ${backendImage}" 
+                        sh "docker tag ${PROJECT_NAME}_frontend ${frontendImage}"
                         
+                        echo "Pushing images to Docker Hub..."
                         sh "docker push ${backendImage}"
                         sh "docker push ${frontendImage}"
                     }
@@ -71,8 +53,8 @@ pipeline {
             steps {
                 script {
                     echo "Deploying new version: ${IMAGE_TAG}"
-                    sh "docker-compose -p ${PROJECT_DIR_NAME} down"
-                    sh "TAG=${IMAGE_TAG} docker-compose -p ${PROJECT_DIR_NAME} up -d"
+                    sh "docker-compose -p ${PROJECT_NAME} down"
+                    sh "TAG=${IMAGE_TAG} docker-compose -p ${PROJECT_NAME} up -d"
                 }
             }
         }
