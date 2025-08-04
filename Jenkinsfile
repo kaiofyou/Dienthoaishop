@@ -1,6 +1,12 @@
 pipeline {
     agent any
-    
+
+    // Thêm khối options này
+    options {
+        // Tùy chọn này sẽ xóa workspace trước khi build bắt đầu
+        // Bằng cách này, Jenkins sẽ luôn checkout code mới nhất
+        wipeout true 
+    }
     environment {
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         // Cập nhật đúng username Docker Hub của bạn
