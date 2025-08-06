@@ -1,7 +1,7 @@
 services:
   backend:
     build: ./dienthoai-shop
-    # Đổi tên image cho đúng với repository của bạn
+    # Tên image này đã được định nghĩa rõ ràng, rất tốt!
     image: duongtuan05/dienthoai-shop-backend:${TAG:-latest}
     container_name: backend-app
     ports:
@@ -17,7 +17,6 @@ services:
 
   frontend:
     build: ./dienthoai-shop-frontend
-    # Đổi tên image cho đúng với repository của bạn
     image: duongtuan05/dienthoai-shop-frontend:${TAG:-latest}
     container_name: frontend-app
     ports:
@@ -33,7 +32,10 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      # SỬA ĐỔI Ở ĐÂY: Sử dụng biến môi trường để truyền đường dẫn tuyệt đối
+      - ${PROMETHEUS_CONFIG:-./prometheus.yml}:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
       - monitoring-net
 
