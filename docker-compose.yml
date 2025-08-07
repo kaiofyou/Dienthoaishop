@@ -32,8 +32,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      # SỬA ĐỔI Ở ĐÂY: Sử dụng biến môi trường để truyền đường dẫn tuyệt đối
-      - ${PROMETHEUS_CONFIG:-./prometheus.yml}:/etc/prometheus/prometheus.yml
+      - ./prometheus:/etc/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
