@@ -46,7 +46,6 @@ function App() {
         <Route path="products/:id" element={<ProductDetailPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-
         <Route element={<ProtectedRoute />}>
           <Route path="my-orders" element={<MyOrdersPage />} />
           <Route path="my-orders/:id" element={<OrderDetailPage />} />

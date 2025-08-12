@@ -61,7 +61,7 @@ public class OrderService {
             orderItem.setProduct(product);
             orderItem.setQuantity(itemRequest.getQuantity());
 
-            // --- SỬA LỖI LOGIC Ở ĐÂY ---
+
             // Lấy giá cuối cùng (giá giảm giá nếu có, nếu không thì lấy giá gốc)
             BigDecimal priceAtPurchase = product.getDiscountPrice() != null ? product.getDiscountPrice() : product.getPrice();
             orderItem.setPriceAtPurchase(priceAtPurchase);

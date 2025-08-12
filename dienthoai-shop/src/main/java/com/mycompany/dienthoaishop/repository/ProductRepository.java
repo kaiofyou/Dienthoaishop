@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     // Tìm các sản phẩm có tên chứa chuỗi 'keyword', không phân biệt hoa thường
-    List<Product> findByNameContainingIgnoreCase(String keyword); // <-- Thêm dòng này
+    List<Product> findByNameContainingIgnoreCase(String keyword);
     Page<Product> findByCategoryId(Long categoryId, Pageable pageable);
 }

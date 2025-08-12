@@ -43,10 +43,13 @@ function Navbar() {
 
       {/* Cụm link bên phải */}
       <div className={styles.navGroup}>
-        {user && ( // <-- THÊM ĐIỀU KIỆN Ở ĐÂY
-          <Link to="/cart" className={styles.navLink}>
-            Giỏ hàng ({cartItemCount})
-          </Link>
+        {user && (
+          <>
+            {/* Đảm bảo link này trỏ đến /cart */}
+            <Link to="/cart" className={styles.navLink}>
+              Giỏ hàng ({cartItemCount})
+            </Link>
+          </>
         )}
 
         {user ? (
